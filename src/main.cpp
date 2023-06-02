@@ -21,6 +21,35 @@ int a_input;
 int b_input;
 int c_input;
 
+// Joystick Input Data last Cycle
+int a_input_prv;
+int b_input_prv;
+int c_input_prv;
+
+void selfTest(){
+    delay(50);
+    for (int i = 1; i <= 50; i++){
+        aAxis.write(i);
+        bAxis.write(i);
+        cAxis.write(i);
+        delay(30);
+    }
+    delay(500);
+    for (int i = 50; i <= 100; i++){
+        aAxis.write(i);
+        bAxis.write(i);
+        cAxis.write(i);
+        delay(30);
+    }
+    delay(500);
+    for (int i = 100; i >= 50; i--){
+        aAxis.write(i);
+        bAxis.write(i);
+        cAxis.write(i);
+        delay(30);
+    }
+    delay(500);
+}
 
 void setup() {
     Serial.begin(9600);
@@ -28,41 +57,45 @@ void setup() {
     aAxis.attach(A_AXIS_PIN);
     bAxis.attach(B_AXIS_PIN);
     cAxis.attach(C_AXIS_PIN);
+
+    a_input_prv = 50;
+    b_input_prv = 50;
+    c_input_prv = 50;
+
+    selfTest();
 }
 
 void loop() {
     a_input = analogRead(A_INPUT);
-    Serial.write("A Raw: ");
-    Serial.write((int)a_input);
-    Serial.write('\n');
+    Serial.print("A Raw: ");
+    Serial.print((int)a_input);
     a_input = map(a_input, 0, 1023, 0, 180);
-    Serial.write("A Mapped : ");
-    Serial.write((int)a_input);
-    Serial.write("\n \n");
 
     b_input = analogRead(B_INPUT);
-    Serial.write("B Raw: ");
-    Serial.write((int)b_input);
-    Serial.write('\n');
+    Serial.print(" B Raw: ");
+    Serial.print((int)b_input);
     b_input = map(b_input, 0, 1023, 0, 100);
-    Serial.write("B Mapped: ");
-    Serial.write((int)b_input);
-    Serial.write("\n \n");
 
     c_input = analogRead(C_INPUT);
-    Serial.write("C Raw: ");
-    Serial.write((int)c_input);
-    Serial.write('\n');
+    Serial.write(" C Raw: ");
+    Serial.print((int)c_input);
+    Serial.print('\n');
     c_input = map(c_input, 0, 1023,0,180);
-    Serial.write("C Mapped: ");
-    Serial.write((int)c_input);
-    Serial.write("\n \n");
 
-    aAxis.write(a_input);
-    bAxis.write(b_input);
-    cAxis.write(c_input);
+    if(abs(a_input - a_input_prv) < 5) {
+        aAxis.write(a_input);
+        a_input_prv = a_input;
+    }
 
-    Serial.write("\n \n");
-    delay(
-            50);
+    if (abs(b_input - b_input_prv) < 5) {
+        bAxis.write(b_input);
+        b_input_prv = b_input;
+    }
+
+    if (abs(c_input - c_input_prv) < 5) {
+        cAxis.write(c_input);
+        c_input_prv = c_input;
+    }
+
+    delay(50);
 }

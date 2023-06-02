@@ -53,6 +53,7 @@ void selfTest(){
 
 void setup() {
     Serial.begin(9600);
+    Serial.println("Robot Selftest");
 
     aAxis.attach(A_AXIS_PIN);
     bAxis.attach(B_AXIS_PIN);
@@ -63,6 +64,7 @@ void setup() {
     c_input_prv = 50;
 
     selfTest();
+    Serial.println("Selftest OK");
 }
 
 void loop() {
@@ -85,16 +87,23 @@ void loop() {
     if(abs(a_input - a_input_prv) < 5) {
         aAxis.write(a_input);
         a_input_prv = a_input;
+        Serial.print("New vals: A: ");
+        Serial.println(a_input);
     }
 
     if (abs(b_input - b_input_prv) < 5) {
         bAxis.write(b_input);
         b_input_prv = b_input;
+        Serial.print(" B: ");
+        Serial.println(b_input);
     }
 
     if (abs(c_input - c_input_prv) < 5) {
         cAxis.write(c_input);
         c_input_prv = c_input;
+        Serial.print(" C: ");
+        Serial.print(c_input);
+        Serial.println();
     }
 
     delay(50);
